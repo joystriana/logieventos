@@ -9,6 +9,8 @@ import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ResourceTypesComponent } from './resource-types/resource-types';
+import { SharedModule } from '../../shared/shared-module';
+
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { ResourceTypesComponent } from './resource-types/resource-types';
     RouterModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    SharedModule
   ],
     exports: [
       //ResourcesComponent
