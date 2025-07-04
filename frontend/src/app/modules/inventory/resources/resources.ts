@@ -36,7 +36,7 @@ interface ResourceType {
 @Component({
   selector: 'app-resources',
   standalone: true,
-  imports: [CommonModule, FormsModule], // <-- Añade FormsModule aquí
+  imports: [CommonModule, FormsModule],
   templateUrl: './resources.html',
   styleUrls: ['./resources.scss']
 })

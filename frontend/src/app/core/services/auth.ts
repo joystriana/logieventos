@@ -129,7 +129,7 @@ export class AuthService {
     return token;
   }
 
-  private getUserData(): UserData | null {
+  public getUserData(): UserData | null {
     const user = localStorage.getItem('user');
     const parsedUser = user ? JSON.parse(user) : null;
     console.log('Getting user data from storage:', parsedUser);

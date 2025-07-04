@@ -5,6 +5,9 @@ import { UserManagementRoutingModule } from './user-management-routing-module';
 import { UserList } from './user-list/user-list';
 import { UserProfileComponent } from './user-profile/user-profile';
 import { RoleManagement } from './role-management/role-management';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared-module';
 
 
 @NgModule({
@@ -15,7 +18,11 @@ import { RoleManagement } from './role-management/role-management';
   ],
   imports: [
     CommonModule,
-    UserManagementRoutingModule
+    UserManagementRoutingModule,
+    SharedModule,
+    FontAwesomeModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [
     UserList,

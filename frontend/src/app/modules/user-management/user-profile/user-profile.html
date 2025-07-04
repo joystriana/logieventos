@@ -1,1 +1,161 @@
-<p>user-profile works!</p>
+<div class="profile-container">
+  <app-navbar></app-navbar>
+  
+  <div class="profile-content">
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="profile-card">
+            <div class="card-header">
+              <div class="header-content">
+                <h3>
+                  <i class="fas fa-user-circle me-2"></i>Mi Perfil
+                </h3>
+                <span class="role-badge" *ngIf="userData">
+                  Rol: {{ userData.role | titlecase }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="card-body">
+              <!-- Alertas -->
+              <div *ngIf="showAlert" class="custom-alert alert-{{alertType}}">
+                <i class="fas" [ngClass]="{
+                  'fa-check-circle': alertType === 'success',
+                  'fa-exclamation-circle': alertType === 'warning',
+                  'fa-times-circle': alertType === 'danger'
+                }"></i>
+                {{ alertMessage }}
+                <button type="button" class="close-btn" (click)="showAlert = false">&times;</button>
+              </div>
+
+              <!-- Formulario -->
+              <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading; else loading">
+                <div class="form-grid">
+                  <!-- Documento -->
+                  <div class="form-group">
+                    <label>Documento</label>
+                    <div class="input-container">
+                      <i class="fas fa-id-card"></i>
+                      <input type="text" formControlName="document" placeholder="Documento">
+                    </div>
+                    <div class="error-message" *ngIf="f['document'].invalid && (f['document'].dirty || f['document'].touched)">
+                      <div *ngIf="f['document'].errors?.['required']">Documento es requerido</div>
+                      <div *ngIf="f['document'].errors?.['pattern']">Solo se permiten números</div>
+                    </div>
+                  </div>
+
+                  <!-- Nombre Completo -->
+                  <div class="form-group">
+                    <label>Nombre Completo</label>
+                    <div class="input-container">
+                      <i class="fas fa-user"></i>
+                      <input type="text" formControlName="fullname" placeholder="Nombre Completo">
+                    </div>
+                    <div class="error-message" *ngIf="f['fullname'].invalid && (f['fullname'].dirty || f['fullname'].touched)">
+                      <div *ngIf="f['fullname'].errors?.['required']">Nombre completo es requerido</div>
+                      <div *ngIf="f['fullname'].errors?.['minlength']">Mínimo 3 caracteres</div>
+                    </div>
+                  </div>
+
+                  <!-- Username -->
+                  <div class="form-group">
+                    <label>Nombre de Usuario</label>
+                    <div class="input-container">
+                      <i class="fas fa-at"></i>
+                      <input type="text" formControlName="username" placeholder="Nombre de Usuario">
+                    </div>
+                    <div class="error-message" *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched)">
+                      <div *ngIf="f['username'].errors?.['required']">Username es requerido</div>
+                      <div *ngIf="f['username'].errors?.['minlength']">Mínimo 3 caracteres</div>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <div class="input-container">
+                      <i class="fas fa-envelope"></i>
+                      <input type="email" formControlName="email" placeholder="Correo Electrónico">
+                    </div>
+                    <div class="error-message" *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
+                      <div *ngIf="f['email'].errors?.['required']">Email es requerido</div>
+                      <div *ngIf="f['email'].errors?.['email']">Ingrese un email válido</div>
+                    </div>
+                  </div>
+
+                  <!-- Rol (solo lectura) -->
+                  <div class="form-group" *ngIf="userData">
+                    <label>Rol</label>
+                    <div class="input-container">
+                      <i class="fas fa-user-tag"></i>
+                      <select formControlName="role" [disabled]="false">
+                        <option value="admin">Administrador</option>
+                        <option value="coordinador">Coordinador</option>
+                        <option value="lider">Líder</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Password -->
+                  <div class="form-group">
+                    <label>Nueva Contraseña (opcional)</label>
+                    <div class="input-container">
+                      <i class="fas fa-lock"></i>
+                      <input type="password" formControlName="password" placeholder="Nueva Contraseña">
+                    </div>
+                    <div class="error-message" *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)">
+                      <div *ngIf="f['password'].errors?.['minlength']">Mínimo 6 caracteres</div>
+                    </div>
+                  </div>
+
+                  <!-- Confirm Password -->
+                  <div class="form-group">
+                    <label>Confirmar Contraseña</label>
+                    <div class="input-container">
+                      <i class="fas fa-lock"></i>
+                      <input type="password" formControlName="confirmPassword" placeholder="Confirmar Contraseña">
+                    </div>
+                    <div class="error-message" *ngIf="profileForm.errors?.['mismatch'] && (profileForm.touched || profileForm.dirty)">
+                      Las contraseñas no coinciden
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" [disabled]="isSaving || profileForm.invalid">
+                    <i class="fas fa-save me-2"></i>
+                    {{ isSaving ? 'Guardando...' : 'Guardar Cambios' }}
+                  </button>
+                </div>
+              </form>
+
+              <ng-template #loading>
+                <div class="loading-container">
+                  <div class="spinner"></div>
+                  <p>Cargando datos del perfil...</p>
+                </div>
+              </ng-template>
+            </div>
+
+            <div class="card-footer" *ngIf="userData">
+              <div class="footer-content">
+                <span>
+                  <i class="fas fa-calendar-plus me-1"></i>
+                  Creado: {{ userData.createdAt | date:'mediumDate' }}
+                </span>
+                <span>
+                  <i class="fas fa-calendar-check me-1"></i>
+                  Actualizado: {{ userData.updatedAt | date:'mediumDate' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <app-sidebar></app-sidebar>
+  <app-footer></app-footer>
+</div>
